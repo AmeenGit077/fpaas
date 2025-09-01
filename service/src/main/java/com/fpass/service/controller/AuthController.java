@@ -1,38 +1,46 @@
 package com.fpass.service.controller;
 
-import com.fpass.service.entity.User;
+import com.fpass.service.DAO.AuthDAO;
+import com.fpass.service.DTO.UserDTO;
 import com.fpass.service.repository.UserRepository;
-import com.fpass.service.util.JwtUtil;
+import com.fpass.service.util.CorrelationIdUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private JwtUtil jwtUtil;
+
+    private final AuthDAO authDAO;
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return "User registered!";
+    public String register(@RequestBody UserDTO user) {
+
+        String correlationId = CorrelationIdUtil.getCorrelationId();
+        log.info("[{}] Register API called for username: {}", correlationId, user.getUsername());
+
+        String result = authDAO.register(user);
+
+        log.info("[{}] Register successful for username: {}", correlationId, user.getUsername());
+        return result;
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        User dbUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public String login(@RequestBody UserDTO user) {
+        String correlationId = CorrelationIdUtil.getCorrelationId();
+        log.info("[{}] Login API called for username: {}", correlationId, user.getUsername());
 
-        if (passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            return jwtUtil.generateToken(user.getUsername());
-        } else {
-            throw new RuntimeException("Invalid credentials");
-        }
+        String token = authDAO.login(user);
+
+        log.info("[{}] Login successful for username: {}", correlationId, user.getUsername());
+        return token;
     }
 }
