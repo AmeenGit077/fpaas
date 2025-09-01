@@ -1,4 +1,4 @@
-package com.fpass.service.Handler;
+package com.fpass.service.exceptionHandler;
 
 import com.fpass.service.DTO.ErrorResponseDTO;
 import com.fpass.service.util.CorrelationIdUtil;

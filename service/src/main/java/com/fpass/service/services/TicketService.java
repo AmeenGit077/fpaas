@@ -2,7 +2,7 @@ package com.fpass.service.services;
 
 import com.fpass.service.entity.Booking;
 import com.fpass.service.entity.Ticket;
-import com.fpass.service.entity.User;
+import com.fpass.service.entity.Users;
 import com.fpass.service.repository.BookingRepository;
 import com.fpass.service.repository.TicketRepository;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ public class TicketService {
         this.qrCodeService = qrCodeService;
     }
 
-    public Booking bookTicket(User user, Long ticketId) throws Exception {
+    public Booking bookTicket(Users users, Long ticketId) throws Exception {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        String qrPath = qrCodeService.generateQRCode("User:" + user.getId() + ", Ticket:" + ticket.getId());
+        String qrPath = qrCodeService.generateQRCode("User:" + users.getId() + ", Ticket:" + ticket.getId());
 
         Booking booking = Booking.builder()
-                .user(user)
+                .users(users)
                 .ticket(ticket)
                 .qrCodePath(qrPath)
                 .bookingTime(LocalDateTime.now())

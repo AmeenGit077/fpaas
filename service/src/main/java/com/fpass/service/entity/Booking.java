@@ -19,7 +19,7 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    private User user;
+    private Users users;
 
     @ManyToOne
     private Ticket ticket;

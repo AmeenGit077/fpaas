@@ -1,6 +1,6 @@
 package com.fpass.service.DAO;
 
-import com.fpass.service.entity.User;
+import com.fpass.service.entity.Users;
 import com.fpass.service.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +15,11 @@ public class UserDAO {
         this.userRepository = userRepository;
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
+    public Users save(Users users) {
+        return userRepository.save(users);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<Users> findByUsername(String username) {
+        return userRepository.findByUsernameNativeIgnoreCase(username);
     }
 }

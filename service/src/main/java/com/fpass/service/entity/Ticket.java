@@ -23,7 +23,7 @@ public class Ticket {
     private LocalDateTime bookingTime;
 
     @ManyToOne
-    private User user;
+    private Users users;
 
     private String qrCodePath;  // Path to saved QR code image
 }

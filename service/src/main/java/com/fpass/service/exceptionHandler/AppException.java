@@ -1,7 +1,10 @@
-package com.fpass.service.Handler;
+package com.fpass.service.exceptionHandler;
 
 
-    // User not found
+import lombok.Getter;
+
+// User not found
+    @Getter
     public class AppException extends RuntimeException {
 
         private final ErrorCode errorCode;
@@ -10,7 +13,8 @@ package com.fpass.service.Handler;
             USER_NOT_FOUND,
             INVALID_CREDENTIALS,
             USER_ALREADY_EXISTS,
-            INTERNAL_ERROR
+            INTERNAL_ERROR,
+            TICKET_NOT_FOUND,
         }
 
         private AppException(String message, ErrorCode errorCode) {
@@ -18,11 +22,7 @@ package com.fpass.service.Handler;
             this.errorCode = errorCode;
         }
 
-        public ErrorCode getErrorCode() {
-            return errorCode;
-        }
-
-        // Factory methods
+    // Factory methods
         public static AppException userNotFound(String username) {
             return new AppException("User not found: " + username, ErrorCode.USER_NOT_FOUND);
         }
@@ -37,6 +37,10 @@ package com.fpass.service.Handler;
 
         public static AppException internalError(String message) {
             return new AppException(message, ErrorCode.INTERNAL_ERROR);
+        }
+
+        public static AppException ticketNotFound(String message) {
+        return new AppException(message, ErrorCode.TICKET_NOT_FOUND);
         }
     }
 

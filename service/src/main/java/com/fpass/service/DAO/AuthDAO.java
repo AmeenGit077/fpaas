@@ -1,12 +1,10 @@
 package com.fpass.service.DAO;
 
 import com.fpass.service.DTO.UserDTO;
-import com.fpass.service.Handler.AppException;
-import com.fpass.service.entity.User;
-import com.fpass.service.repository.UserRepository;
-import com.fpass.service.util.JwtUtil;
+import com.fpass.service.entity.Users;
+import com.fpass.service.exceptionHandler.AppException;
+import com.fpass.service.services.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class AuthDAO {
 
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
     private final UserDAO userDAO;
 
     public String register(UserDTO userDTO) {
@@ -24,22 +22,22 @@ public class AuthDAO {
             throw AppException.userAlreadyExists(userDTO.getUsername());
         }
 
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        userDAO.save(user);
+        Users users = new Users();
+        users.setUsername(userDTO.getUsername());
+        users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userDAO.save(users);
         return "User registered successfully!";
     }
 
 
     public String login(UserDTO userDTO) {
-        User dbUser = userDAO.findByUsername(userDTO.getUsername())
+        Users dbUsers = userDAO.findByUsername(userDTO.getUsername())
                 .orElseThrow(() -> AppException.userNotFound(userDTO.getUsername()));
 
-        if (!passwordEncoder.matches(userDTO.getPassword(), dbUser.getPassword())) {
+        if (!passwordEncoder.matches(userDTO.getPassword(), dbUsers.getPassword())) {
             throw AppException.invalidCredentials();
         }
 
-        return jwtUtil.generateToken(dbUser.getUsername());
+        return jwtService.generateToken(dbUsers.getUsername());
     }
 }
