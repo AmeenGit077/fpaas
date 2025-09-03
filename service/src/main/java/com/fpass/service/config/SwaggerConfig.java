@@ -20,7 +20,7 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Masabi Ticketing API")
+                        .title("FPAAS Ticketing API")
                         .description("API documentation for FPAAS Ticketing with JWT Authentication")
                         .version("1.0"))
                 .servers(List.of(
