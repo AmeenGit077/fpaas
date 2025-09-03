@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +14,11 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
+
+    @Value("${swagger.server.url}")
+    private String swaggerServerUrl;
+
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -24,7 +30,7 @@ public class SwaggerConfig {
                         .description("API documentation for FPAAS Ticketing with JWT Authentication")
                         .version("1.0"))
                 .servers(List.of(
-                                new Server().url("http://localhost:8080").description("Local Development Server")
+                                new Server().url(swaggerServerUrl).description("Local Development Server")
                         ))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new io.swagger.v3.oas.models.Components()
